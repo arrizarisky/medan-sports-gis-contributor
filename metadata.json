@@ -1,0 +1,9 @@
+{
+  "name": "Medan Sports GIS Contributor",
+  "description": "A contributor-focused application for submitting and managing sports facility data in Medan City. Public users view data from the web GIS portal, while contributors add and update data through this separate app.",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera"
+  ],
+  "majorCapabilities": []
+}
