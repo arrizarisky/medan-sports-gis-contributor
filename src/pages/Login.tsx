@@ -34,7 +34,7 @@ export default function Login() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `http://localhost:3000/auth/callback`, 
+          redirectTo: `https://medan-sports-gis-contributor.vercel.app/auth/callback`, 
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
