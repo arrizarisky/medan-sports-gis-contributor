@@ -6,6 +6,7 @@ import { LogIn, Mail, Lock, Chrome } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import LogoIcons from '../assets/logos/logo.png';
+import LogoGoogle from '../assets/icons/google.png';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -95,28 +96,28 @@ export default function Login() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full py-6 rounded-3xl mt-4" isLoading={loading}>
+              <Button type="submit" className="w-full py-6 rounded-full mt-4" isLoading={loading}>
                 Sign In
               </Button>
             </form>
 
-            <div className="relative">
+            {/* <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-zinc-100"></div>
               </div>
               <div className="relative flex justify-center text-[10px] font-bold uppercase tracking-widest">
                 <span className="bg-white px-4 text-zinc-300">Or continue with</span>
               </div>
-            </div>
+            </div> */}
 
-            <Button
+            {/* <Button
               variant="outline"
-              className="w-full py-6 rounded-3xl border-zinc-100 bg-white"
+              className="w-full py-6 gap-2 rounded-full border-zinc-100 bg-white"
               onClick={handleGoogleLogin}
             >
-              <Chrome className="mr-2 h-5 w-5" />
-              Google
-            </Button>
+              <img src={LogoGoogle} alt="Logo google" className="h-5 w-5 object-contain" />
+              Login with Google
+            </Button> */}
 
             <p className="text-center text-[10px] font-bold uppercase tracking-widest text-zinc-400">
               New here?{' '}

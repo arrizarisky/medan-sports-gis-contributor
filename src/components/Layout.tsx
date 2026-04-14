@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/UI';
-import { LayoutDashboard, PlusCircle, ListChecks, LogOut, MapPin } from 'lucide-react';
+import { LayoutDashboard, MapPinPlus, ListChecks, LogOut, MapPin } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 import IconLogo from '../assets/logos/logo.png';
@@ -20,7 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const navItems = [
     { path: '/', label: 'Home', icon: LayoutDashboard },
     { path: '/my-contributions', label: 'Places', icon: ListChecks },
-    { path: '/add-place', label: 'Add', icon: PlusCircle },
+    { path: '/add-place', label: 'Add', icon: MapPinPlus },
   ];
 
   return (
@@ -66,7 +66,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   )}
                 >
                   <div className={cn(
-                    'flex h-10 w-10 items-center justify-center rounded-2xl transition-all',
+                    'flex h-10 w-10 items-center justify-center rounded-full transition-all',
                     isActive ? 'bg-zinc-900 text-white shadow-lg shadow-zinc-200' : 'bg-transparent'
                   )}>
                     <Icon className="h-5 w-5" />

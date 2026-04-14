@@ -136,7 +136,7 @@ export default function Dashboard() {
 
       <div className="pb-10">
         <Link to="/add-place">
-          <Button className="w-full py-6 rounded-4xl text-base">
+          <Button className="w-full py-6 rounded-full text-base">
             <Plus className="mr-2 h-6 w-6" />
             Add New Facility
           </Button>
