@@ -30,10 +30,15 @@ export default function Login() {
 
   const handleGoogleLogin = async () => {
     try {
+      const currentOrigin = window.location.origin
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: currentOrigin, 
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         },
       });
       if (error) throw error;
