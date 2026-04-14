@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -19,6 +19,7 @@ import {
   Search,
   Star,
   StarHalf,
+  Image
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { facilityService } from "../services/facilityService";
@@ -107,7 +108,7 @@ function MapPicker({ lat, lng, onChange }: MapPickerProps) {
         />
         <MapEvents />
       </MapContainer>
-      <div className="absolute bottom-4 left-1/2 z-[1000] -translate-x-1/2 rounded-full bg-zinc-900/80 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md">
+      <div className="absolute bottom-4 left-1/2 z-997 -translate-x-1/2 rounded-full bg-zinc-900/80 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md">
         Tap map to set location
       </div>
     </div>
@@ -167,6 +168,9 @@ export default function FacilityForm({
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [detectingLocation, setDetectingLocation] = useState(false);
+  const [isPhotoSourceOpen, setIsPhotoSourceOpen] = useState(false);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (initialData) {
@@ -625,11 +629,11 @@ export default function FacilityForm({
             <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
               Photos
             </label>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               {photos.map((url, idx) => (
                 <div
                   key={idx}
-                  className="group relative aspect-square overflow-hidden rounded-3xl bg-zinc-100"
+                  className="group relative aspect-video overflow-hidden rounded-3xl bg-zinc-100 border border-zinc-100"
                 >
                   <img
                     src={url}
@@ -646,28 +650,81 @@ export default function FacilityForm({
                   </button>
                 </div>
               ))}
-              <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-zinc-200 bg-zinc-50 transition-colors hover:bg-zinc-100">
-                {uploading ? (
-                  <Loader2 className="h-6 w-6 animate-spin text-zinc-400" />
-                ) : (
-                  <>
-                    <Camera className="mb-2 h-6 w-6 text-zinc-400" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 text-center px-4">
-                      Add Photo
-                    </span>
-                  </>
-                )}
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handlePhotoUpload}
-                  disabled={uploading}
-                />
-              </label>
+               <button
+                type="button"
+                onClick={() => setIsPhotoSourceOpen(true)}
+                className="flex aspect-video cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50/50 hover:bg-zinc-50 transition-colors"
+              >
+                <Plus className="mb-1 text-zinc-400" size={24} />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Add Photo</span>
+              </button>
             </div>
-          </div>
+
+            {/* Hidden Inputs */}
+            <input
+              type="file"
+              ref={cameraInputRef}
+              className="hidden"
+              accept="image/*"
+              capture="environment"
+              onChange={handlePhotoUpload}
+            />
+            <input
+              type="file"
+              ref={galleryInputRef}
+              className="hidden"
+              accept="image/*"
+              multiple
+              onChange={handlePhotoUpload}
+            />
+
+            {/* Photo Source Modal */}
+            {isPhotoSourceOpen && (
+              <div className="fixed inset-0 z-1000 flex items-end justify-center bg-black/40 p-4 backdrop-blur-sm sm:items-center">
+                <div className="w-full max-w-sm overflow-hidden rounded-[2rem] bg-white shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-300">
+                  <div className="p-6">
+                    <div className="mb-6 flex items-center justify-between">
+                      <h4 className="text-sm font-black uppercase tracking-widest text-zinc-900">Select Source</h4>
+                      <button 
+                        onClick={() => setIsPhotoSourceOpen(false)}
+                        className="text-zinc-400 hover:text-zinc-900"
+                      >
+                        <X size={20} />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          cameraInputRef.current?.click();
+                          setIsPhotoSourceOpen(false);
+                        }}
+                        className="flex flex-col items-center gap-3 rounded-2xl bg-zinc-50 p-6 transition-colors hover:bg-zinc-100"
+                      >
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-900 text-white">
+                          <Camera size={24} />
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-900">Camera</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          galleryInputRef.current?.click();
+                          setIsPhotoSourceOpen(false);
+                        }}
+                        className="flex flex-col items-center gap-3 rounded-2xl bg-zinc-50 p-6 transition-colors hover:bg-zinc-100"
+                      >
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-900 text-white">
+                          <Image size={24} />
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-900">Gallery</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            </div>
         </Card>
 
         <div className="flex gap-4 pb-12">
