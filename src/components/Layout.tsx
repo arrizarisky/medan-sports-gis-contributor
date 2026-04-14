@@ -27,7 +27,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-zinc-50">
       <div className="mobile-container relative flex flex-col pb-20">
         {/* Header */}
-        <header className="sticky top-0 z-30 border-b border-zinc-100 bg-white/80 px-6 py-4 backdrop-blur-md">
+        <header className="sticky top-0 z-999 border-b border-zinc-100 bg-white/80 px-6 py-4 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-2xl">

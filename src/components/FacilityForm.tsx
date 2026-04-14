@@ -122,7 +122,7 @@ function StarRating({
   onChange: (val: number) => void;
 }) {
   return (
-    <div className="flex items-center gap-1 bottom-4">
+    <div className="flex items-center gap-1 bottom-4 flex-wrap">
       {[1, 2, 3, 4, 5].map((star) => {
         const isFull = star <= value;
         const isHalf = !isFull && star - 0.5 <= value;
@@ -167,6 +167,12 @@ export default function FacilityForm({
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [detectingLocation, setDetectingLocation] = useState(false);
+
+  useEffect(() => {
+    if (initialData) {
+      console.log('FacilityForm initialized with data:', initialData);
+    }
+  }, [initialData]);
 
   const {
     register,
@@ -302,6 +308,8 @@ export default function FacilityForm({
         photos,
         user_id: user?.id,
       };
+
+      console.log('Submitting facility data:', facilityData);
 
       if (isEditing && initialData) {
         await facilityService.update(initialData.id, facilityData);
@@ -471,9 +479,16 @@ export default function FacilityForm({
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-                Price / Rate
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Price / Rate</label>
+                <button
+                  type="button"
+                  onClick={() => setValue('price', 'Free', { shouldValidate: true })}
+                  className="text-[10px] font-bold text-blue-600 hover:underline"
+                >
+                  Set Free
+                </button>
+              </div>
               <Input
                 placeholder="e.g. Rp 50.000 / hour"
                 {...register("price")}
@@ -485,9 +500,16 @@ export default function FacilityForm({
               )}
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-                Opening Hours
-              </label>
+               <div className="flex items-center justify-between">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Opening Hours</label>
+                <button
+                  type="button"
+                  onClick={() => setValue('opening_hours', '24 Hours', { shouldValidate: true })}
+                  className="text-[10px] font-bold text-blue-600 hover:underline"
+                >
+                  Set 24 Hours
+                </button>
+              </div>
               <Input
                 placeholder="e.g. 08:00 - 22:00"
                 {...register("opening_hours")}
@@ -555,7 +577,7 @@ export default function FacilityForm({
                   setValue("rating", val, { shouldValidate: true })
                 }
               />
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 {[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((v) => (
                   <button
                     key={v}
