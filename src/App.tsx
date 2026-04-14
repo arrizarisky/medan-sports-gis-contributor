@@ -9,6 +9,7 @@ import MyContributions from './pages/MyContributions';
 import AddFacility from './pages/AddFacility';
 import EditFacility from './pages/EditFacility';
 import { Toaster } from 'react-hot-toast';
+import AuthCallback from './pages/AuthCallback';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -34,6 +35,7 @@ export default function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/register" element={<Register />} />
           
           <Route path="/" element={

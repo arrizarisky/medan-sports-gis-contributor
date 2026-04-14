@@ -31,11 +31,10 @@ export default function Login() {
 
   const handleGoogleLogin = async () => {
     try {
-      const currentOrigin = window.location.origin
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: currentOrigin, 
+          redirectTo: `http://localhost:3000/auth/callback`, 
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
@@ -101,23 +100,23 @@ export default function Login() {
               </Button>
             </form>
 
-            {/* <div className="relative">
+            <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-zinc-100"></div>
               </div>
               <div className="relative flex justify-center text-[10px] font-bold uppercase tracking-widest">
                 <span className="bg-white px-4 text-zinc-300">Or continue with</span>
               </div>
-            </div> */}
+            </div> 
 
-            {/* <Button
+            <Button
               variant="outline"
               className="w-full py-6 gap-2 rounded-full border-zinc-100 bg-white"
               onClick={handleGoogleLogin}
             >
               <img src={LogoGoogle} alt="Logo google" className="h-5 w-5 object-contain" />
               Login with Google
-            </Button> */}
+            </Button>
 
             <p className="text-center text-[10px] font-bold uppercase tracking-widest text-zinc-400">
               New here?{' '}
