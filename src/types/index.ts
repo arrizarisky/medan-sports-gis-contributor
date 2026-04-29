@@ -16,8 +16,15 @@ export interface Facility {
   contributor_name?: string;
   contributor_email?: string;
   opening_hours?: string;
+  kecamatan_id?: number;
   created_at?: string;
   updated_at?: string;
+}
+
+export interface Kecamatan {
+  id: number;
+  name: string;
+  created_at?: string;
 }
 
 export interface Comment {

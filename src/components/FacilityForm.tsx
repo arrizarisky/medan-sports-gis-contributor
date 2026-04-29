@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Facility, SPORT_TYPES } from "../types";
+import { Facility, SPORT_TYPES, Kecamatan } from "../types";
 import { Button, Input, Card, Badge } from "../components/UI";
 import { Modal } from "../components/Modal";
 import {
@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { facilityService } from "../services/facilityService";
+import { kecamatanService } from "../services/kecamatanService";
 import { useAuth } from "../hooks/useAuth";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -63,6 +64,7 @@ const facilitySchema = z.object({
   ratingSource: z.string().min(1, "Rating source is required"),
   contributor_name: z.string().min(1, "Contributor name is required"),
   contributor_email: z.string().email("Invalid email"),
+  kecamatan_id: z.number().optional(),
 });
 
 type FacilityFormData = z.infer<typeof facilitySchema>;
@@ -169,6 +171,8 @@ export default function FacilityForm({
   const [submitting, setSubmitting] = useState(false);
   const [detectingLocation, setDetectingLocation] = useState(false);
   const [isPhotoSourceOpen, setIsPhotoSourceOpen] = useState(false);
+  const [kecamatans, setKecamatans] = useState<Kecamatan[]>([]);
+  const [loadingKecamatans, setLoadingKecamatans] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
@@ -177,6 +181,21 @@ export default function FacilityForm({
       console.log('FacilityForm initialized with data:', initialData);
     }
   }, [initialData]);
+
+  useEffect(() => {
+    const fetchKecamatans = async () => {
+      setLoadingKecamatans(true);
+      try {
+        const data = await kecamatanService.getAll();
+        setKecamatans(data);
+      } catch (error: any) {
+        toast.error('Failed to load kecamatans: ' + error.message);
+      } finally {
+        setLoadingKecamatans(false);
+      }
+    };
+    fetchKecamatans();
+  }, []);
 
   const {
     register,
@@ -203,6 +222,7 @@ export default function FacilityForm({
             user?.user_metadata?.full_name ||
             "",
           contributor_email: initialData.contributor_email || user?.email || "",
+          kecamatan_id: initialData.kecamatan_id,
         }
       : {
           type: "gym",
@@ -215,6 +235,7 @@ export default function FacilityForm({
           ratingSource: "Google Maps",
           contributor_name: user?.user_metadata?.full_name || "",
           contributor_email: user?.email || "",
+          kecamatan_id: undefined,
         },
   });
 
@@ -308,7 +329,7 @@ export default function FacilityForm({
       const facilityData = {
         ...data,
         priceValue: formatPrice(data.price),
-
+        kecamatan_id: data.kecamatan_id || null,
         photos,
         user_id: user?.id,
       };
@@ -420,6 +441,29 @@ export default function FacilityForm({
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                Kecamatan (District)
+              </label>
+              {loadingKecamatans ? (
+                <div className="flex h-12 items-center justify-center rounded-2xl border border-zinc-100 bg-zinc-50">
+                  <Loader2 className="h-5 w-5 animate-spin text-zinc-400" />
+                </div>
+              ) : (
+                <select
+                  className="flex h-12 w-full rounded-2xl border border-zinc-100 bg-zinc-50 px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                  {...register("kecamatan_id", { valueAsNumber: true })}
+                >
+                  <option value="">Select Kecamatan</option>
+                  {kecamatans.map((kecamatan) => (
+                    <option key={kecamatan.id} value={kecamatan.id}>
+                      {kecamatan.name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
           </div>
 
