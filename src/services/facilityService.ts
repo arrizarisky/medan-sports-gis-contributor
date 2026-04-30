@@ -34,10 +34,30 @@ export const facilityService = {
     return data as Facility;
   },
 
-  async create(facility: Omit<Facility, "id" | "created_at" | "updated_at">) {
+  async existsByName(name: string) {
+    const normalizedName = name.trim();
+
     const { data, error } = await supabase
       .from("facilities")
-      .insert([facility])
+      .select("id")
+      .ilike("name", normalizedName)
+      .limit(1);
+
+    if (error) throw error;
+    return Boolean(data && data.length > 0);
+  },
+
+  async create(facility: Omit<Facility, "id" | "created_at" | "updated_at">) {
+    const normalizedName = facility.name.trim();
+    const isDuplicate = await facilityService.existsByName(normalizedName);
+
+    if (isDuplicate) {
+      throw new Error("Facility with the same name already exists");
+    }
+
+    const { data, error } = await supabase
+      .from("facilities")
+      .insert([{ ...facility, name: normalizedName }])
       .select();
 
     if (error) throw error;
